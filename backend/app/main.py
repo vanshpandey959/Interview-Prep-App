@@ -1,5 +1,6 @@
 import json
 from typing import Optional
+from fastapi.middleware.cors import CORSMiddleware
 from fastapi import FastAPI, HTTPException, UploadFile, File, Form, status
 from app.config import settings
 from app.schemas import (
@@ -17,6 +18,13 @@ app = FastAPI(
     version="1.0.0"
 )
 
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],  # Adjust to explicit origins (e.g., ["http://localhost:5173"]) in production
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 @app.get("/")
 def health_check():
