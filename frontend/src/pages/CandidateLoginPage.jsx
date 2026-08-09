@@ -65,7 +65,7 @@ export const CandidateLoginPage = () => {
           <span className="h-7 w-7 rounded-md bg-[var(--color-brand)] flex items-center justify-center">
             <Radio className="h-4 w-4 text-white" strokeWidth={2.5} />
           </span>
-          <span className="font-[var(--font-display)] font-semibold">Signal</span>
+          <span className="font-[var(--font-display)] font-semibold">abTalks</span>
         </button>
 
         <div className="rounded-2xl border border-[var(--color-border)] bg-[var(--color-surface)] p-8">
@@ -105,7 +105,11 @@ export const CandidateLoginPage = () => {
                     <button
                       type="button"
                       key={c.member.id}
-                      onClick={() => setSelectedId(c.member.id)}
+                      onClick={() => {
+                        setSelectedId(c.member.id);
+                        setPassword('');
+                        setError('');
+                      }}
                       className={`w-full flex items-center justify-between px-3.5 py-2.5 text-left transition-colors ${
                         active ? 'bg-[var(--color-brand-dim)]/30' : 'hover:bg-[var(--color-base-raised)]'
                       }`}
@@ -128,13 +132,27 @@ export const CandidateLoginPage = () => {
                 Candidate password
               </label>
               <input
+                key={selectedId}
                 type="password"
                 required
+                autoComplete="off"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 placeholder="••••••••"
                 className="w-full rounded-lg bg-[var(--color-base-raised)] border border-[var(--color-border)] px-3.5 py-2.5 text-sm placeholder:text-[var(--color-ink-faint)] focus:outline-none focus:border-[var(--color-brand-soft)]"
               />
+              <div className="mt-2 rounded-lg border border-dashed border-[var(--color-border)] bg-[var(--color-base-raised)] px-3.5 py-2">
+                <p className="text-[10px] uppercase tracking-wider text-[var(--color-ink-faint)] mb-1">
+                  For hackathon judges
+                </p>
+                <button
+                  type="button"
+                  onClick={() => setPassword('cand@123')}
+                  className="text-xs font-[var(--font-mono)] text-[var(--color-brand-soft)] hover:underline"
+                >
+                  cand@123 — tap to fill
+                </button>
+              </div>
             </div>
 
             {error && <p className="text-xs text-[var(--color-rose)]">{error}</p>}

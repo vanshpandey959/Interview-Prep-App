@@ -141,7 +141,7 @@ export const InterviewPage = () => {
           <span className="h-6 w-6 rounded-md bg-[var(--color-brand)] flex items-center justify-center">
             <Radio className="h-3.5 w-3.5 text-white" strokeWidth={2.5} />
           </span>
-          <span className="font-[var(--font-display)] text-sm font-semibold">Signal</span>
+          <span className="font-[var(--font-display)] text-sm font-semibold">abTalks</span>
           <span className="text-xs font-[var(--font-mono)] text-[var(--color-ink-faint)] ml-2">
             session &middot; {sessionIdRef.current.slice(0, 8)}
           </span>

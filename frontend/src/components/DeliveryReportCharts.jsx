@@ -1,5 +1,5 @@
-import React from 'react';
-import { Mic, MicOff, Clock, Repeat, GitBranch, MapPin } from 'lucide-react';
+import React, { useState } from 'react';
+import { Mic, MicOff, Clock, Repeat, GitBranch, MapPin, Info, ChevronDown } from 'lucide-react';
 
 const Gauge = ({ value, label, color }) => {
   const clamped = Math.max(0, Math.min(100, value ?? 0));
@@ -73,6 +73,71 @@ const SplitBar = ({ segments }) => {
           </div>
         ))}
       </div>
+    </div>
+  );
+};
+
+const MetricsMethodology = () => {
+  const [open, setOpen] = useState(false);
+
+  return (
+    <div className="rounded-xl border border-[var(--color-border)] bg-[var(--color-surface-2)] overflow-hidden">
+      <button
+        onClick={() => setOpen((v) => !v)}
+        className="w-full flex items-center justify-between px-4 py-3 text-left"
+      >
+        <span className="flex items-center gap-2 text-xs font-semibold text-[var(--color-ink-dim)]">
+          <Info className="h-3.5 w-3.5 text-[var(--color-brand-soft)]" />
+          How these scores are calculated
+        </span>
+        <ChevronDown className={`h-4 w-4 text-[var(--color-ink-faint)] transition-transform ${open ? 'rotate-180' : ''}`} />
+      </button>
+
+      {open && (
+        <div className="px-4 pb-4 space-y-3 text-[11px] text-[var(--color-ink-dim)] leading-relaxed">
+          <p>
+            All delivery metrics are computed deterministically in <code className="text-[var(--color-brand-soft)]">metrics_service.py</code> from
+            per-turn acoustic data — none of this is LLM-generated, so it's fully reproducible.
+          </p>
+
+          <div>
+            <p className="font-medium text-[var(--color-ink)] mb-1">Pace ({'<'}110 / 110–160 / {'>'}160 wpm)</p>
+            <p>
+              Words-per-minute is duration-weighted across every voice turn (longer answers count more), then
+              labeled Slow / Ideal / Fast against a 110–160 wpm conversational band, centered at 135 wpm.
+            </p>
+          </div>
+
+          <div>
+            <p className="font-medium text-[var(--color-ink)] mb-1">Fluency score (0–100)</p>
+            <p>
+              Starts at 100 and subtracts: 4 points per filler word/min, 3 points per pause/min, and 5 points
+              per second that the single longest pause exceeds a 3s "normal thinking pause" baseline.
+            </p>
+          </div>
+
+          <div>
+            <p className="font-medium text-[var(--color-ink)] mb-1">Delivery score (0–100)</p>
+            <p>
+              The average of the fluency score and a pace score (100 at the 135 wpm center, decaying linearly
+              with distance from it in either direction).
+            </p>
+          </div>
+
+          <div>
+            <p className="font-medium text-[var(--color-ink)] mb-1">Question mix &amp; curriculum coverage</p>
+            <p>
+              Derived from existing session bookkeeping — each distinct assessed day marks one "new topic" turn;
+              every other turn in that day is counted as a follow-up.
+            </p>
+          </div>
+
+          <p className="text-[var(--color-ink-faint)] italic">
+            Note: fluency/delivery describe speech pace, filler rate, and pause patterns only — they are not a
+            measure of the candidate's confidence, knowledge, or psychological state.
+          </p>
+        </div>
+      )}
     </div>
   );
 };
@@ -184,6 +249,8 @@ export const DeliveryReportCharts = ({ metrics }) => {
           />
         </div>
       </div>
+
+      <MetricsMethodology />
     </div>
   );
 };

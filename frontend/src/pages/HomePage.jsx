@@ -100,7 +100,7 @@ export const HomePage = () => {
           </h1>
 
           <p className="mt-6 text-lg text-[var(--color-ink-dim)] max-w-lg leading-relaxed">
-            Signal turns a cohort's completed missions into a live, adaptive interview \u2014
+            abTalks turns a cohort's completed missions into a live, adaptive interview \u2014
             then scores what was said and how it was said, side by side.
           </p>
 
@@ -307,7 +307,7 @@ export const HomePage = () => {
         <div className="max-w-7xl mx-auto px-6 lg:px-8 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-[var(--color-ink-faint)]">
           <div className="flex items-center gap-2">
             <Radio className="h-3.5 w-3.5" />
-            Signal &middot; AI Technical Interviewer
+            abTalks &middot; AI Technical Interviewer
           </div>
           <span>Built for the AI Cohort curriculum.</span>
         </div>

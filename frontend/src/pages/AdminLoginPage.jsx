@@ -39,7 +39,7 @@ export const AdminLoginPage = () => {
           <span className="h-7 w-7 rounded-md bg-[var(--color-brand)] flex items-center justify-center">
             <Radio className="h-4 w-4 text-white" strokeWidth={2.5} />
           </span>
-          <span className="font-[var(--font-display)] font-semibold">Signal</span>
+          <span className="font-[var(--font-display)] font-semibold">abTalks</span>
         </button>
 
         <div className="rounded-2xl border border-[var(--color-border)] bg-[var(--color-surface)] p-8">
@@ -81,6 +81,19 @@ export const AdminLoginPage = () => {
               )}
             </button>
           </form>
+
+          <div className="mt-5 rounded-lg border border-dashed border-[var(--color-border)] bg-[var(--color-base-raised)] px-3.5 py-2.5">
+            <p className="text-[10px] uppercase tracking-wider text-[var(--color-ink-faint)] mb-1">
+              For hackathon judges
+            </p>
+            <button
+              type="button"
+              onClick={() => setPassword('admin@123')}
+              className="text-xs font-[var(--font-mono)] text-[var(--color-brand-soft)] hover:underline"
+            >
+              admin@123 — tap to fill
+            </button>
+          </div>
         </div>
 
         <button
