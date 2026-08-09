@@ -142,7 +142,7 @@ export const CandidateLoginPage = () => {
             <button
               type="submit"
               disabled={submitting || !selected}
-              className="w-full inline-flex items-center justify-center gap-2 rounded-lg bg-[var(--color-ink)] hover:bg-white transition-colors text-[#0a0b10] font-medium py-2.5 disabled:opacity-50"
+              className="w-full inline-flex items-center justify-center gap-2 rounded-lg bg-[var(--color-ink)] hover:opacity-90 transition-opacity text-[var(--color-base)] font-medium py-2.5 disabled:opacity-50"
             >
               {submitting ? <Spinner size={16} className="border-black/20 border-t-black" /> : (
                 <>

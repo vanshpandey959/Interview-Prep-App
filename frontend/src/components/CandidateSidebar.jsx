@@ -14,7 +14,7 @@ export const CandidateSidebar = ({ name, jobRole, tab, onTabChange, onStartInter
           <span className="h-7 w-7 rounded-md bg-[var(--color-brand)] flex items-center justify-center">
             <Radio className="h-4 w-4 text-white" strokeWidth={2.5} />
           </span>
-          <span className="font-[var(--font-display)] font-semibold text-[var(--color-ink)]">Signal</span>
+          <span className="font-[var(--font-display)] font-semibold text-[var(--color-ink)]">abTalks</span>
         </div>
 
         <div className="rounded-xl border border-[var(--color-border)] bg-[var(--color-surface)] p-3">

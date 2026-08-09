@@ -150,7 +150,7 @@ export const CandidatePage = () => {
                 </p>
                 <button
                   onClick={() => navigate('/interview')}
-                  className="mt-4 inline-flex items-center gap-1.5 rounded-full bg-[var(--color-ink)] text-[#0a0b10] text-sm font-medium px-4 py-2"
+                  className="mt-4 inline-flex items-center gap-1.5 rounded-full bg-[var(--color-ink)] text-[var(--color-base)] text-sm font-medium px-4 py-2 hover:opacity-90 transition-opacity"
                 >
                   Start your first interview
                 </button>

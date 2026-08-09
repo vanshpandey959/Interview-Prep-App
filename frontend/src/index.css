@@ -1,40 +1,41 @@
 @import "tailwindcss";
 
 /* ---------------------------------------------------------------------
-   Design tokens — "Signal": a dark, instrument-panel aesthetic for an
-   AI technical interviewer. Deep charcoal base, a violet brand accent,
-   and a warm coral "live signal" accent used for recording/timer states.
+   Design tokens — "Signal": an instrument-panel aesthetic for an AI
+   technical interviewer. Light mode: a cool, paper-white base with the
+   same violet brand accent and warm coral "live signal" accent, both
+   deepened slightly so they hold contrast on a light surface.
    --------------------------------------------------------------------- */
 @theme {
   --font-display: 'Space Grotesk', 'Inter', system-ui, sans-serif;
   --font-sans: 'Inter', system-ui, -apple-system, sans-serif;
   --font-mono: 'JetBrains Mono', ui-monospace, 'SFMono-Regular', Menlo, monospace;
 
-  --color-base: #0a0b10;
-  --color-base-raised: #101219;
-  --color-surface: #14161f;
-  --color-surface-2: #1a1d28;
-  --color-border: #262b39;
-  --color-border-soft: #1e222d;
+  --color-base: #f3f4f8;
+  --color-base-raised: #eceef4;
+  --color-surface: #ffffff;
+  --color-surface-2: #f6f7fb;
+  --color-border: #dfe2ea;
+  --color-border-soft: #e8eaf1;
 
-  --color-ink: #eceef4;
-  --color-ink-dim: #9096a8;
-  --color-ink-faint: #5b6178;
+  --color-ink: #14161f;
+  --color-ink-dim: #565c72;
+  --color-ink-faint: #8a8fa3;
 
-  --color-brand: #6c5ce0;
-  --color-brand-soft: #8b7ef2;
-  --color-brand-dim: #3a3480;
+  --color-brand: #5b46d4;
+  --color-brand-soft: #4a37b8;
+  --color-brand-dim: #ece8fb;
 
-  --color-signal: #ff6b4a;
-  --color-signal-soft: #ff8b6e;
+  --color-signal: #e0562f;
+  --color-signal-soft: #c1431f;
 
-  --color-mint: #35d0a0;
-  --color-amber: #f5b94d;
-  --color-rose: #f2637e;
+  --color-mint: #0f9d72;
+  --color-amber: #b3730a;
+  --color-rose: #c92f52;
 }
 
 html {
-  color-scheme: dark;
+  color-scheme: light;
   scroll-behavior: smooth;
 }
 
@@ -55,8 +56,8 @@ body {
 .scroll-thin::-webkit-scrollbar-thumb:hover { background: var(--color-ink-faint); }
 
 @keyframes pulse-ring {
-  0% { box-shadow: 0 0 0 0 rgba(255, 107, 74, 0.45); }
-  100% { box-shadow: 0 0 0 12px rgba(255, 107, 74, 0); }
+  0% { box-shadow: 0 0 0 0 rgba(224, 86, 47, 0.35); }
+  100% { box-shadow: 0 0 0 12px rgba(224, 86, 47, 0); }
 }
 .live-pulse { animation: pulse-ring 1.8s cubic-bezier(0.4, 0, 0.6, 1) infinite; }
 

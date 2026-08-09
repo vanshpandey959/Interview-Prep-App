@@ -68,8 +68,8 @@ export const HomePage = () => {
   const { role, candidateId } = useAuthStore();
 
   const handleStartInterview = () => {
-    if (role === 'candidate' && candidateId) navigate('/interview');
-    else navigate('/candidate/login', { state: { from: '/interview' } });
+    if (role === 'candidate' && candidateId) navigate('/candidate');
+    else navigate('/candidate/login');
   };
 
   return (
@@ -107,7 +107,7 @@ export const HomePage = () => {
           <div className="mt-9 flex flex-wrap items-center gap-4">
             <button
               onClick={handleStartInterview}
-              className="group inline-flex items-center gap-2 rounded-full bg-[var(--color-ink)] text-[#0a0b10] font-medium pl-6 pr-5 py-3.5 hover:bg-white transition-colors"
+              className="group inline-flex items-center gap-2 rounded-full bg-[var(--color-ink)] text-[var(--color-base)] font-medium pl-6 pr-5 py-3.5 hover:opacity-90 transition-opacity"
             >
               Start interview
               <ArrowUpRight className="h-4 w-4 transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
@@ -295,7 +295,7 @@ export const HomePage = () => {
           </p>
           <button
             onClick={handleStartInterview}
-            className="relative mt-8 inline-flex items-center gap-2 rounded-full bg-[var(--color-ink)] text-[#0a0b10] font-medium pl-6 pr-5 py-3.5 hover:bg-white transition-colors"
+            className="relative mt-8 inline-flex items-center gap-2 rounded-full bg-[var(--color-ink)] text-[var(--color-base)] font-medium pl-6 pr-5 py-3.5 hover:opacity-90 transition-opacity"
           >
             Start interview
             <ArrowUpRight className="h-4 w-4" />

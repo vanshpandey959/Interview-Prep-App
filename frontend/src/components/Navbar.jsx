@@ -23,16 +23,16 @@ export const Navbar = () => {
 
   const handleStartInterview = () => {
     if (role === 'candidate' && candidateId) {
-      navigate('/interview');
+      navigate('/candidate');
     } else {
-      navigate('/candidate/login', { state: { from: '/interview' } });
+      navigate('/candidate/login');
     }
   };
 
   return (
     <header
       className={`sticky top-0 z-40 transition-colors duration-300 ${
-        scrolled ? 'bg-[#0a0b10]/85 backdrop-blur-md border-b border-[var(--color-border-soft)]' : 'bg-transparent'
+        scrolled ? 'bg-[var(--color-base)]/85 backdrop-blur-md border-b border-[var(--color-border-soft)]' : 'bg-transparent'
       }`}
     >
       <div className="max-w-7xl mx-auto px-6 lg:px-8 h-16 flex items-center justify-between">
@@ -44,7 +44,7 @@ export const Navbar = () => {
             <Radio className="h-4 w-4 text-white" strokeWidth={2.5} />
           </span>
           <span className="font-[var(--font-display)] text-[17px] font-semibold tracking-tight text-[var(--color-ink)]">
-            Signal
+            abTalks
           </span>
         </button>
 
@@ -69,7 +69,7 @@ export const Navbar = () => {
           </button>
           <button
             onClick={handleStartInterview}
-            className="group inline-flex items-center gap-1.5 rounded-full bg-[var(--color-ink)] text-[#0a0b10] text-sm font-medium pl-4 pr-3 py-2 hover:bg-white transition-colors"
+            className="group inline-flex items-center gap-1.5 rounded-full bg-[var(--color-ink)] text-[var(--color-base)] text-sm font-medium pl-4 pr-3 py-2 hover:opacity-90 transition-opacity"
           >
             Start interview
             <ArrowUpRight className="h-3.5 w-3.5 transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
@@ -82,7 +82,7 @@ export const Navbar = () => {
       </div>
 
       {open && (
-        <div className="md:hidden border-t border-[var(--color-border-soft)] bg-[#0a0b10] px-6 py-5 space-y-4">
+        <div className="md:hidden border-t border-[var(--color-border-soft)] bg-[var(--color-base)] px-6 py-5 space-y-4">
           {NAV_LINKS.map((link) => (
             <a
               key={link.href}
@@ -102,7 +102,7 @@ export const Navbar = () => {
             </button>
             <button
               onClick={() => { setOpen(false); handleStartInterview(); }}
-              className="rounded-full bg-[var(--color-ink)] text-[#0a0b10] text-sm font-medium px-4 py-2.5"
+              className="rounded-full bg-[var(--color-ink)] text-[var(--color-base)] text-sm font-medium px-4 py-2.5"
             >
               Start interview
             </button>
