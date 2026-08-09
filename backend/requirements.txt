@@ -11,3 +11,4 @@ typing_extensions>=4.16.0
 pymongo>=4.17.0
 pyjwt>=2.13.0
 pydantic-settings>=2.15.0
+python-multipart>=0.0.32
