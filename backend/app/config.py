@@ -14,9 +14,7 @@ class Settings(BaseSettings):
     # ---------------------------------------------------------------------------
     # 2. LLM Model Configurations (Groq)
     # ---------------------------------------------------------------------------
-    # Fast model for standard conversation turns & quick follow-ups
     GROQ_FAST_MODEL: str = "llama-3.1-8b-instant"
-    # High-reasoning model for evaluation report generation
     GROQ_REASONING_MODEL: str = "llama-3.3-70b-versatile"
 
     # ---------------------------------------------------------------------------
@@ -24,20 +22,31 @@ class Settings(BaseSettings):
     # ---------------------------------------------------------------------------
     BASE_DIR: Path = Path(__file__).resolve().parent.parent
     DATA_DIR: Path = BASE_DIR / "data"
-    
+
     CURRICULUM_PATH: Path = DATA_DIR / "curriculum.json"
-    CANDIDATES_PATH: Path = DATA_DIR / "candidates.json"
-    DATABASE_PATH: Path = DATA_DIR / "index.db"
+    CANDIDATES_PATH: Path = DATA_DIR / "candidates.json"  # only read once, by scripts/seed_candidates.py
+    DATABASE_PATH: Path = DATA_DIR / "index.db"           # SQLite — live session state only
 
     # ---------------------------------------------------------------------------
-    # 4. Interview Constraints & Rules (tech_spec.md)
+    # 4. MongoDB — permanent storage (candidates + completed interview reports)
+    # ---------------------------------------------------------------------------
+    MONGO_URI: str = "mongodb://localhost:27017"
+    MONGO_DB_NAME: str = "interview_prep"
+
+    # ---------------------------------------------------------------------------
+    # 5. Auth — shared-password login + JWT
+    # ---------------------------------------------------------------------------
+    ADMIN_PASSWORD: str = "admin@123"
+    CANDIDATE_PASSWORD: str = "cand@123"
+    JWT_SECRET_KEY: str = "CHANGE-ME-IN-.env"
+    JWT_EXPIRE_MINUTES: int = 720  # 12 hours
+
+    # ---------------------------------------------------------------------------
+    # 6. Interview Constraints & Rules
     # ---------------------------------------------------------------------------
     MIN_QUESTIONS: int = 8
     MIN_CURRICULUM_DAYS: int = 4
 
-    # ---------------------------------------------------------------------------
-    # 5. Pydantic Settings Config
-    # ---------------------------------------------------------------------------
     model_config = SettingsConfigDict(
         env_file=".env",
         env_file_encoding="utf-8",
@@ -45,5 +54,4 @@ class Settings(BaseSettings):
     )
 
 
-# Instantiate a global settings object for import across the app
 settings = Settings()
