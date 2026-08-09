@@ -1,7 +1,8 @@
 import json
+from pathlib import Path
 from typing import Optional
-from fastapi.middleware.cors import CORSMiddleware
 from fastapi import FastAPI, HTTPException, UploadFile, File, Form, status
+from fastapi.middleware.cors import CORSMiddleware
 from app.config import settings
 from app.schemas import (
     InterviewStartRequest,
@@ -20,16 +21,72 @@ app = FastAPI(
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],  # Adjust to explicit origins (e.g., ["http://localhost:5173"]) in production
-    allow_credentials=True,
+    # allow_origins=["*"] combined with allow_credentials=True is invalid per the
+    # CORS spec and browsers will reject it. This app doesn't use cookies/auth
+    # headers, so list explicit dev origins and drop allow_credentials.
+    allow_origins=[
+        "http://localhost:5173",
+        "http://127.0.0.1:5173",
+    ],  # Adjust/add production origin(s) on deploy
+    allow_credentials=False,
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+# File path to candidates JSON source — reuse the same setting the rest of the
+# backend (candidate_analyzer.py) already uses, so both code paths read the
+# same file regardless of the process's working directory.
+CANDIDATES_FILE_PATH = settings.CANDIDATES_PATH
+
+
+def load_candidates_from_file():
+    """Helper utility to read and parse the candidate list from JSON.
+
+    candidates.json is shaped as {"candidates": [...]}; this returns just
+    the list, matching what candidate_analyzer.py expects when it iterates
+    data.get("candidates", []).
+    """
+    if not CANDIDATES_FILE_PATH.exists():
+        return []
+    try:
+        with open(CANDIDATES_FILE_PATH, "r", encoding="utf-8") as f:
+            data = json.load(f)
+            return data.get("candidates", []) if isinstance(data, dict) else data
+    except Exception as e:
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail=f"Failed to load candidates file: {str(e)}"
+        )
+
 
 @app.get("/")
 def health_check():
     """Health check endpoint to verify backend status."""
     return {"status": "online", "service": "AI Technical Interviewer API"}
+
+
+@app.get("/api/candidates")
+def get_candidates():
+    candidates = load_candidates_from_file()
+    print(f"DEBUG: Found {len(candidates)} candidates in file.")
+    return {"candidates": candidates}
+
+
+@app.get("/api/candidates/{candidate_id}")
+def get_candidate_by_id(candidate_id: str):
+    """Fetches a single candidate profile by ID."""
+    candidates = load_candidates_from_file()
+    
+    # Check matching ID in root or nested member struct
+    for cand in candidates:
+        cand_id = cand.get("id") or cand.get("member", {}).get("id")
+        if cand_id == candidate_id:
+            return cand
+            
+    raise HTTPException(
+        status_code=status.HTTP_404_NOT_FOUND,
+        detail=f"Candidate with ID '{candidate_id}' not found."
+    )
 
 
 @app.post("/api/interview", response_model=InterviewResponseSchema)

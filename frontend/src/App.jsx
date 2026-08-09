@@ -1,122 +1,101 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from './assets/vite.svg'
-import heroImg from './assets/hero.png'
-import './App.css'
+import React, { useState } from 'react';
+import { apiService } from './services/api';
+import { CandidateSelector } from './components/CandidateSelector';
+import { InterviewRoom } from './components/InterviewRoom';
+import { EvaluationModal } from './components/EvaluationModal';
 
-function App() {
-  const [count, setCount] = useState(0)
+export default function App() {
+  const [sessionId, setSessionId] = useState(null);
+  const [messages, setMessages] = useState([]);
+  const [isLoading, setIsLoading] = useState(false);
+  const [feedback, setFeedback] = useState(null);
+
+  // Initialize Interview Session
+  const handleStartInterview = async (newSessionId, candidateData) => {
+    setIsLoading(true);
+    try {
+      const response = await apiService.sendJsonTurn({
+        sessionId: newSessionId,
+        candidate: candidateData,
+      });
+
+      setSessionId(newSessionId);
+      setMessages([{ role: 'assistant', text: response.reply }]);
+    } catch (err) {
+      alert(`Error starting session: ${err.message}`);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  // Handle Text Response Submission
+  const handleSendText = async (textMessage) => {
+    setMessages((prev) => [...prev, { role: 'user', text: textMessage }]);
+    setIsLoading(true);
+
+    try {
+      const response = await apiService.sendJsonTurn({
+        sessionId,
+        message: textMessage,
+      });
+
+      setMessages((prev) => [...prev, { role: 'assistant', text: response.reply }]);
+
+      if (response.done && response.feedback) {
+        setFeedback(response.feedback);
+      }
+    } catch (err) {
+      alert(`Error processing response: ${err.message}`);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  // Handle Audio Recording Response Submission
+  const handleSendAudio = async (audioBlob) => {
+    setIsLoading(true);
+
+    try {
+      const response = await apiService.sendAudioTurn(sessionId, audioBlob);
+
+      // Append temporary transcription placeholder or update assistant reply directly
+      setMessages((prev) => [
+        ...prev,
+        { role: 'user', text: '[Voice Response Submitted]' },
+        { role: 'assistant', text: response.reply },
+      ]);
+
+      if (response.done && response.feedback) {
+        setFeedback(response.feedback);
+      }
+    } catch (err) {
+      alert(`Error processing audio: ${err.message}`);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const handleRestart = () => {
+    setSessionId(null);
+    setMessages([]);
+    setFeedback(null);
+  };
 
   return (
-    <>
-      <section id="center">
-        <div className="hero">
-          <img src={heroImg} className="base" width="170" height="179" alt="" />
-          <img src={reactLogo} className="framework" alt="React logo" />
-          <img src={viteLogo} className="vite" alt="Vite logo" />
-        </div>
-        <div>
-          <h1>Get started</h1>
-          <p>
-            Edit <code>src/App.jsx</code> and save to test <code>HMR</code>
-          </p>
-        </div>
-        <button
-          type="button"
-          className="counter"
-          onClick={() => setCount((count) => count + 1)}
-        >
-          Count is {count}
-        </button>
-      </section>
+    <div className="min-h-screen bg-slate-950 font-sans antialiased text-slate-100 selection:bg-indigo-500 selection:text-white">
+      {!sessionId ? (
+        <CandidateSelector onStartInterview={handleStartInterview} isLoading={isLoading} />
+      ) : (
+        <InterviewRoom
+          sessionId={sessionId}
+          messages={messages}
+          onSendText={handleSendText}
+          onSendAudio={handleSendAudio}
+          isLoading={isLoading}
+        />
+      )}
 
-      <div className="ticks"></div>
-
-      <section id="next-steps">
-        <div id="docs">
-          <svg className="icon" role="presentation" aria-hidden="true">
-            <use href="/icons.svg#documentation-icon"></use>
-          </svg>
-          <h2>Documentation</h2>
-          <p>Your questions, answered</p>
-          <ul>
-            <li>
-              <a href="https://vite.dev/" target="_blank">
-                <img className="logo" src={viteLogo} alt="" />
-                Explore Vite
-              </a>
-            </li>
-            <li>
-              <a href="https://react.dev/" target="_blank">
-                <img className="button-icon" src={reactLogo} alt="" />
-                Learn more
-              </a>
-            </li>
-          </ul>
-        </div>
-        <div id="social">
-          <svg className="icon" role="presentation" aria-hidden="true">
-            <use href="/icons.svg#social-icon"></use>
-          </svg>
-          <h2>Connect with us</h2>
-          <p>Join the Vite community</p>
-          <ul>
-            <li>
-              <a href="https://github.com/vitejs/vite" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#github-icon"></use>
-                </svg>
-                GitHub
-              </a>
-            </li>
-            <li>
-              <a href="https://chat.vite.dev/" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#discord-icon"></use>
-                </svg>
-                Discord
-              </a>
-            </li>
-            <li>
-              <a href="https://x.com/vite_js" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#x-icon"></use>
-                </svg>
-                X.com
-              </a>
-            </li>
-            <li>
-              <a href="https://bsky.app/profile/vite.dev" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#bluesky-icon"></use>
-                </svg>
-                Bluesky
-              </a>
-            </li>
-          </ul>
-        </div>
-      </section>
-
-      <div className="ticks"></div>
-      <section id="spacer"></section>
-    </>
-  )
+      {feedback && <EvaluationModal feedback={feedback} onRestart={handleRestart} />}
+    </div>
+  );
 }
-
-export default App
