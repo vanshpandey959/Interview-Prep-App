@@ -1,16 +1,61 @@
-# React + Vite
+# Signal — AI Technical Interviewer (Frontend)
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+A React + Vite + Tailwind v4 frontend for the Interview-Prep-App backend (FastAPI + Mongo).
 
-Currently, two official plugins are available:
+## Setup
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+```bash
+cd frontend
+npm install
+cp .env.example .env   # set VITE_API_BASE_URL if your API isn't on 127.0.0.1:8000
+npm run dev
+```
 
-## React Compiler
+The backend's CORS config (`backend/app/main.py`) only allows `http://localhost:5173` /
+`http://127.0.0.1:5173` by default — that's Vite's default dev port, so no change is needed
+unless you run on a different port.
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+## Structure
 
-## Expanding the ESLint configuration
+```
+src/
+  lib/
+    api.js          — single fetch client for every backend route (auth/candidates/interview/reports/admin)
+    authStore.js     — zustand store (persisted) holding { token, role, candidateId }
+  hooks/
+    useSpeechToText.js — Web Speech API (live captions) + MediaRecorder (audio upload) combined hook
+  components/
+    Navbar.jsx              — public marketing navbar (Admin login + Start interview)
+    ProtectedRoute.jsx      — role-gated route wrapper
+    AdminSidebar.jsx        — candidate directory + search/filter, used on /admin
+    CandidateSidebar.jsx    — My Profile / My Reports nav, used on /candidate
+    RoundTimer.jsx          — circular session clock (center of the interview room)
+    DeliveryReportCharts.jsx — gauges + bars for InterviewMetricsSchema
+    StatCard.jsx, Spinner.jsx
+  pages/
+    HomePage.jsx            — landing page ("Start interview" replaces "Request demo")
+    AdminLoginPage.jsx      — admin-only login (password, no candidateId)
+    CandidateLoginPage.jsx  — candidate picker + shared candidate password
+    AdminDashboardPage.jsx  — /admin — cohort overview when nothing selected, else candidate detail + reports
+    CandidatePage.jsx       — /candidate — My Profile / My Reports tabs
+    InterviewPage.jsx       — /interview — round timer, AI transcript (left), candidate input (right)
+    ResultPage.jsx          — /report — full evaluation report (interview completion + past reports)
+```
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+## Auth flow
+
+- **Admin**: Navbar → "Admin login" → `POST /api/auth/login {password}` → `/admin`.
+- **Candidate**: "Start interview" (or "Candidate login") → pick a profile from
+  `GET /api/candidates` → `POST /api/auth/login {password, candidateId}` → redirected back to
+  wherever they were headed (defaults to `/candidate`).
+
+Both flows store a bearer token in `authStore` (persisted to `localStorage` under the key
+`signal-auth`); `lib/api.js` attaches it automatically to authenticated calls.
+
+## Interview flow
+
+`InterviewPage` opens a session (`POST /api/interview/start`) and then loops on
+`POST /api/interview/turn` (text) or `POST /api/interview/audio` (voice, via `useSpeechToText`'s
+`MediaRecorder`). Each response's `previousAnswerFeedback` and `isFollowUp` are rendered as
+distinct cards from the next question. When `done: true`, the returned `feedback` is handed to
+`/report` via router state — the same page a candidate reaches from "My Reports".
