@@ -78,7 +78,7 @@ const SplitBar = ({ segments }) => {
 };
 
 const MetricsMethodology = () => {
-  const [open, setOpen] = useState(false);
+  const [open, setOpen] = useState(true);
 
   return (
     <div className="rounded-xl border border-[var(--color-border)] bg-[var(--color-surface-2)] overflow-hidden">
@@ -86,15 +86,15 @@ const MetricsMethodology = () => {
         onClick={() => setOpen((v) => !v)}
         className="w-full flex items-center justify-between px-4 py-3 text-left"
       >
-        <span className="flex items-center gap-2 text-xs font-semibold text-[var(--color-ink-dim)]">
-          <Info className="h-3.5 w-3.5 text-[var(--color-brand-soft)]" />
+        <span className="flex items-center gap-2 text-sm font-semibold text-[var(--color-ink-dim)]">
+          <Info className="h-4 w-4 text-[var(--color-brand-soft)]" />
           How these scores are calculated
         </span>
         <ChevronDown className={`h-4 w-4 text-[var(--color-ink-faint)] transition-transform ${open ? 'rotate-180' : ''}`} />
       </button>
 
       {open && (
-        <div className="px-4 pb-4 space-y-3 text-[11px] text-[var(--color-ink-dim)] leading-relaxed">
+        <div className="px-4 pb-4 space-y-3.5 text-sm text-[var(--color-ink-dim)] leading-relaxed">
           <p>
             All delivery metrics are computed deterministically in <code className="text-[var(--color-brand-soft)]">metrics_service.py</code> from
             per-turn acoustic data — none of this is LLM-generated, so it's fully reproducible.
